@@ -1,0 +1,3 @@
+﻿  Test.cpp
+D:\OOP 2019-2020\LAB10\LAB10\Test.cpp(73,26): warning C4101: 'repo_1': unreferenced local variable
+  LAB10.vcxproj -> D:\OOP 2019-2020\LAB10\Debug\LAB10.exe
