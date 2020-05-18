@@ -1,2 +1,80 @@
-﻿  LAB10.cpp
-  LAB10.vcxproj -> C:\Users\mipau\Desktop\Github\x64\Debug\LAB10.exe
+﻿  Bus.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+  Customer.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+  LAB10.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+  Plane.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+  Service.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\IRepo.h(45,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\IRepo.h(45): message : while compiling class template member function 'int IRepo<T>::size(void)'
+          with
+          [
+              T=User
+          ]
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Service.cpp(95): message : see reference to function template instantiation 'int IRepo<T>::size(void)' being compiled
+          with
+          [
+              T=User
+          ]
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\RepoFile.h(5): message : see reference to class template instantiation 'IRepo<T>' being compiled
+          with
+          [
+              T=User
+          ]
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\RepoFileCSV.h(70): message : see reference to class template instantiation 'RepoFile<User>' being compiled
+  Test.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Test.cpp(67,20): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\IRepo.h(45,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\IRepo.h(45): message : while compiling class template member function 'int IRepo<T>::size(void)'
+          with
+          [
+              T=Transport
+          ]
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Test.cpp(166): message : see reference to function template instantiation 'int IRepo<T>::size(void)' being compiled
+          with
+          [
+              T=Transport
+          ]
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\RepoFile.h(5): message : see reference to class template instantiation 'IRepo<T>' being compiled
+          with
+          [
+              T=Transport
+          ]
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\RepoFileCSV.h(7): message : see reference to class template instantiation 'RepoFile<Transport>' being compiled
+  UI.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(164,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(178,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(192,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(238,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(253,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(327,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(342,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(357,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(406,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(421,23): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\UI.cpp(521,22): warning C4101: 'exc': unreferenced local variable
+  Utilities.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.cpp(33,21): warning C4101: 'exc': unreferenced local variable
+  Transport.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+  User.cpp
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(32,22): warning C4101: 'exc': unreferenced local variable
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(87,22): warning C4101: 'exc': unreferenced local variable
+  Generating Code...
+D:\Git\lab8-11-polimorfism-MarinPaul\LAB10\Utilities.h(95): warning C4715: 'operator>>': not all control paths return a value
+  LAB10.vcxproj -> D:\Git\lab8-11-polimorfism-MarinPaul\x64\Debug\LAB10.exe

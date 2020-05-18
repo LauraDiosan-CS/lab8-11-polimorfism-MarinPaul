@@ -1,95 +1,90 @@
 #include "Test.h"
 
-void TesteCristina_2()
+void resetElements(Service& service, vector<Transport*> defaultTrips)
 {
-	Service s("txt","Text1.txt","Text2.txt");
-	Transport* t1 = new Plane("156", "Cluj-Napoca", "Dubai", "14/06/2020", "nu", 100, 80);
-	Transport* t2 = new Bus("873", "Constanta", "Brasov", "15/07/2020", 1, 40, 20);
-	Transport* t3 = new Bus("118", "Bucuresti", "Vienna", "11/06/2020", 3, 80, 50);
-	s.add<Transport>(t1);
-	s.add<Transport>(t2);
-	s.add<Transport>(t3);
-	///////////////TRY 1
-	try
-	{
-		s.del<Transport>(s.find_by_code_and_arrival("873", "Brasov"));
-		assert(s.size<Transport>() == 2);
-		assert(*(s.at<Transport>(0)) == *t1);
-		assert(*(s.at<Transport>(1)) == *t3);
-	}
-	catch (DeleteException1& exc)
-	{
-		assert(false);
-	}
-	catch (DeleteException2& exc)
-	{
-		assert(false);
-	}
-	//////////////// TRY 2
-	try
-	{
-		s.del<Transport>(s.find_by_code_and_arrival("156", "Paris"));
-		assert(false);
-	}
-	catch (DeleteException1& exc)
-	{
-		cout << "DeleteException1 thrown" << endl;
-		assert(s.size<Transport>() == 2);
-		assert(*(s.at<Transport>(0)) == *t1);
-		assert(*(s.at<Transport>(1)) == *t3);
+	service.empty();
+	for (Transport* t : defaultTrips)
+		service.add(t);
+}
 
-	}
-	catch (DeleteException2& exc)
-	{
-		assert(false);
-	}
-	/////////////////// TRY 3
-	try
-	{
-		s.del<Transport>(s.find_by_code_and_arrival("667", "Fagaras"));
-		assert(false);
-	}
-	catch (DeleteException1& exc)
-	{
-		assert(false);
+void TesteCristina_3()
+{
+	Transport* t1 = new Plane("156", "ClujNapoca", "Dubai", "14/6/2020", "nu", 100, 80);
+	Transport* t2 = new Bus("873", "Constanta", "ClujNapoca", "15/7/2020", 1, 40, 20);
+	Transport* t3 = new Bus("118", "Viena", "Bucuresti", "14/6/2020", 3, 80, 50);
+	Transport* t4 = new Plane("122", "Bucuresti", "ClujNapoca", "14/6/2020", "nu", 100, 80);
+	Transport* t5 = new Plane("122", "ClujNapoca", "Bucuresti", "14/6/2020", "nu", 100, 80);
+	Service service("txt", "Text1.txt", "Text2.txt");
+	vector<Transport*> defaultTrips;
+	defaultTrips.push_back(t1);
+	defaultTrips.push_back(t2);
+	defaultTrips.push_back(t3);
+	defaultTrips.push_back(t4);
+	defaultTrips.push_back(t5);
+	resetElements(service, defaultTrips);
+	service.delete_t(t1);
+	assert(service.size<Transport>() == 3);
+	assert(*service.at<Transport>(0) == *t2);
+	assert(*service.at<Transport>(1) == *t3);
+	assert(*service.at<Transport>(2) == *t5);
+	resetElements(service, defaultTrips);
+	service.delete_t(t2);
+	assert(service.size<Transport>() == 4);
+	assert(*service.at<Transport>(0) == *t1);
+	assert(*service.at<Transport>(1) == *t3);
+	assert(*service.at<Transport>(2) == *t4);
+	assert(*service.at<Transport>(3) == *t5);
+	resetElements(service, defaultTrips);
+	service.delete_t(t3);
+	assert(service.size<Transport>() == 3);
+	assert(*service.at<Transport>(0) == *t1);
+	assert(*service.at<Transport>(1) == *t2);
+	assert(*service.at<Transport>(2) == *t5);
+	resetElements(service, defaultTrips);
+	service.delete_t(t4);
+	assert(service.size<Transport>() == 1);
+	assert(*service.at<Transport>(0) == *t2);
+	resetElements(service, defaultTrips);
+	service.delete_t(t5);
+	assert(service.size<Transport>() == 3);
+	assert(*service.at<Transport>(0) == *t1);
+	assert(*service.at<Transport>(1) == *t2);
+	assert(*service.at<Transport>(2) == *t3);
+	cout << "Teste trecute!" << endl;
+	//ce e mai jos e ca sa pot rula de mai multe ori testul fara sa crape :/
+	service.empty();
+}
 
-	}
-	catch (DeleteException2& exc)
-	{
-		cout << "DeleteException2 thrown" << endl;
-		assert(s.size<Transport>() == 2);
-		assert(*(s.at<Transport>(0)) == *t1);
-		assert(*(s.at<Transport>(1)) == *t3);
-	}
-	/////////////////// TRY 4
+
+void Validator_test()
+{
+	Validator validator;
+	Transport* t1 = new Bus("a,b,c,1/1/1,1,1,1", ',');
 	try
 	{
-		s.del<Transport>(s.find_by_code_and_arrival("156", "Paris"));
-		assert(false);
+		validator.validate<Transport>(t1);
 	}
-	catch (DeleteException2& exc)
-	{
-		cout << "DeleteException2 thrown" << endl;
-	}
-	catch (DeleteException1& exc)
+	catch (exception& exc)
 	{
 		assert(false);
 	}
-	/////////////////// TRY 5
-	try
-	{
-		s.del<Transport>(s.find_by_code_and_arrival("667", "Fagaras"));
-		assert(false);
-	}
-	catch (DeleteException2& exc)
-	{
-		cout << "DeleteException2 thrown" << endl;
-	}
-	catch (DeleteException1& exc)
-	{
-		assert(false);
-	}
-	delete t1, t2, t3;
+	delete t1;
+}
+
+void Customer_test()
+{
+	Customer c;
+	Service s_txt("txt", "Text.txt", "Test_user.txt");
+	vector<Transport*> result = c.search(s_txt, Date(1, 1, 1));
+	assert(result.size() == 1);
+	assert(result.at(0) == s_txt.at<Transport>(0));
+	c.book(s_txt, "a", 1);
+	Transport* t = result.at(0)->clone();
+	t->setBooked_seat(2);
+	assert(*(s_txt.at<Transport>(0)) == (*t));
+	t->setBooked_seat(1);
+	s_txt.mod<Transport>(s_txt.at<Transport>(0), t);
+	delete t;
 }
 
 void Entitati_test()
@@ -172,7 +167,7 @@ void Repo_test()
 	Transport* t1 = ((*repo_txt.all().begin()))->clone();
 	repo_txt.del(t1);
 	assert(repo_txt.size() == 0);
-	Transport* t2 = new Bus("a a a 1/1/1 1 1 1", ' ');
+	Transport* t2 = new Bus("a a a 1/1/1 1 2 1", ' ');
 	repo_txt.add(t2);
 	assert(repo_txt.size() == 1);
 	repo_txt.mod(t2, t1);
@@ -182,7 +177,7 @@ void Repo_test()
 	Transport* c1 = (*(repo_csv.all().begin()))->clone();
 	repo_csv.del(c1);
 	assert(repo_csv.size() == 0);
-	Transport* c2 = new Bus("a a a 1/1/1 1 1 1", ' ');
+	Transport* c2 = new Bus("a a a 1/1/1 1 2 1", ' ');
 	repo_csv.add(c2);
 	assert(repo_csv.size() == 1);
 	repo_csv.mod(c2, c1);
@@ -198,7 +193,7 @@ void Service_test()
 	Transport* t1 = ((*s_txt.all<Transport>().begin()))->clone();
 	s_txt.del<Transport>(t1);
 	assert(s_txt.size<Transport>() == 0);
-	Transport* t2 = new Bus("a a a 1/1/1 1 1 1", ' ');
+	Transport* t2 = new Bus("a a a 1/1/1 1 2 1", ' ');
 	s_txt.add<Transport>(t1);
 	s_txt.mod<Transport>(t1, t2);
 	assert(**(s_txt.all<Transport>().begin()) == *t1);
@@ -212,26 +207,115 @@ void Test()
 	Entitati_test();
 	Repo_test();
 	Service_test();
+	Validator_test();
+	Customer_test();
 }
 
-//void TesteCristina()
-//{
-//	IRepo<Transport>* repo = new RepoFileCSV<Transport>("fisier-111-2.csv");
-//	repo->loadFromFile();
-//	Transport* t1 = new Plane("1x54", "Cluj-Napoca", "Dubai", "14/06/2020", "nu", 100, 80);
-//	Transport* t2 = new Bus("39g0", "Constanta", "Brasov", "15/07/2020", 1, 40, 20);
-//	Transport* t3 = new Bus("41kl", "Bucuresti", "Vienna", "11/06/2020", 3, 80, 50);
-//	assert(repo->size() == 3);
-//	assert(*(repo->at(0)) == *t1);
-//	assert(*(repo->at(1)) == *t2);
-//	assert(*(repo->at(2)) == *t3);
-//	Transport* t4 = new Plane("h6pd", "Iasi", "Munchen", "20/09/2020", "da", 50, 10);
-//	repo->mod(t2, t4);
-//	assert(*(repo->at(0)) == *t1);
-//	assert(*(repo->at(1)) == *t3);
-//	assert(*(repo->at(2)) == *t4);
-//	repo->mod(t1, t2);
-//	assert(*(repo->at(0)) == *t3);
-//	assert(*(repo->at(1)) == *t4);
-//	assert(*(repo->at(2)) == *t2);
-//}
+			//void TesteCristina()
+			//{
+			//	IRepo<Transport>* repo = new RepoFileCSV<Transport>("fisier-111-2.csv");
+			//	repo->loadFromFile();
+			//	Transport* t1 = new Plane("1x54", "Cluj-Napoca", "Dubai", "14/06/2020", "nu", 100, 80);
+			//	Transport* t2 = new Bus("39g0", "Constanta", "Brasov", "15/07/2020", 1, 40, 20);
+			//	Transport* t3 = new Bus("41kl", "Bucuresti", "Vienna", "11/06/2020", 3, 80, 50);
+			//	assert(repo->size() == 3);
+			//	assert(*(repo->at(0)) == *t1);
+			//	assert(*(repo->at(1)) == *t2);
+			//	assert(*(repo->at(2)) == *t3);
+			//	Transport* t4 = new Plane("h6pd", "Iasi", "Munchen", "20/09/2020", "da", 50, 10);
+			//	repo->mod(t2, t4);
+			//	assert(*(repo->at(0)) == *t1);
+			//	assert(*(repo->at(1)) == *t3);
+			//	assert(*(repo->at(2)) == *t4);
+			//	repo->mod(t1, t2);
+			//	assert(*(repo->at(0)) == *t3);
+			//	assert(*(repo->at(1)) == *t4);
+			//	assert(*(repo->at(2)) == *t2);
+			//}
+			
+			//void TesteCristina_2()
+			//{
+			//	Service s("txt", "Text1.txt", "Text2.txt");
+			//	Transport* t1 = new Plane("156", "Cluj-Napoca", "Dubai", "14/06/2020", "nu", 100, 80);
+			//	Transport* t2 = new Bus("873", "Constanta", "Brasov", "15/07/2020", 1, 40, 20);
+			//	Transport* t3 = new Bus("118", "Bucuresti", "Vienna", "11/06/2020", 3, 80, 50);
+			//	s.add<Transport>(t1);
+			//	s.add<Transport>(t2);
+			//	s.add<Transport>(t3);
+			//	try
+			//	{
+			//		s.del<Transport>(s.find_by_code_and_arrival("873", "Brasov"));
+			//		assert(s.size<Transport>() == 2);
+			//		assert(*(s.at<Transport>(0)) == *t1);
+			//		assert(*(s.at<Transport>(1)) == *t3);
+			//	}
+			//	catch (DeleteException1& exc)
+			//	{
+			//		assert(false);
+			//	}
+			//	catch (DeleteException2& exc)
+			//	{
+			//		assert(false);
+			//	}
+			//	try
+			//	{
+			//		s.del<Transport>(s.find_by_code_and_arrival("156", "Paris"));
+			//		assert(false);
+			//	}
+			//	catch (DeleteException1& exc)
+			//	{
+			//		cout << "DeleteException1 thrown" << endl;
+			//		assert(s.size<Transport>() == 2);
+			//		assert(*(s.at<Transport>(0)) == *t1);
+			//		assert(*(s.at<Transport>(1)) == *t3);
+			//
+			//	}
+			//	catch (DeleteException2& exc)
+			//	{
+			//		assert(false);
+			//	}
+			//	try
+			//	{
+			//		s.del<Transport>(s.find_by_code_and_arrival("667", "Fagaras"));
+			//		assert(false);
+			//	}
+			//	catch (DeleteException1& exc)
+			//	{
+			//		assert(false);
+			//
+			//	}
+			//	catch (DeleteException2& exc)
+			//	{
+			//		cout << "DeleteException2 thrown" << endl;
+			//		assert(s.size<Transport>() == 2);
+			//		assert(*(s.at<Transport>(0)) == *t1);
+			//		assert(*(s.at<Transport>(1)) == *t3);
+			//	}
+			//	try
+			//	{
+			//		s.del<Transport>(s.find_by_code_and_arrival("156", "Paris"));
+			//		assert(false);
+			//	}
+			//	catch (DeleteException2& exc)
+			//	{
+			//		cout << "DeleteException2 thrown" << endl;
+			//	}
+			//	catch (DeleteException1& exc)
+			//	{
+			//		assert(false);
+			//	}
+			//	try
+			//	{
+			//		s.del<Transport>(s.find_by_code_and_arrival("667", "Fagaras"));
+			//		assert(false);
+			//	}
+			//	catch (DeleteException2& exc)
+			//	{
+			//		cout << "DeleteException2 thrown" << endl;
+			//	}
+			//	catch (DeleteException1& exc)
+			//	{
+			//		assert(false);
+			//	}
+			//	delete t1, t2, t3;
+			//}

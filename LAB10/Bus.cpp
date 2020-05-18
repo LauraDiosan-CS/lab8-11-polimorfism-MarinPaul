@@ -11,7 +11,7 @@ Bus::Bus(const char* newC, const char* newDep,
 	: Transport(newC, newDep, newArr, newD, newT, newB)
 {
 	if (newTi <= 0)
-		throw runtime_error("Durata trebuie sa fie un numar pozitiv!");
+		throw TransportCreateException("Durata trebuie sa fie un numar pozitiv!");
 	setTime(newTi);
 }
 
@@ -21,7 +21,7 @@ Bus::Bus(const char* newC, const char* newDep,
 	: Transport(newC, newDep, newArr, newD, newT, newB)
 {
 	if (newTi <= 0)
-		throw runtime_error("Durata trebuie sa fie un numar pozitiv!");
+		throw TransportCreateException("Durata trebuie sa fie un numar pozitiv!");
 	setTime(newTi);
 }
 
@@ -34,7 +34,7 @@ Bus::Bus(string line, const char del)
 {
 	vector<string> tokens = readLine(line, del);
 	if (stoi(tokens[4]) <= 0)
-		throw runtime_error("Durata trebuie sa fie un numar pozitiv!");
+		throw TransportCreateException("Durata trebuie sa fie un numar pozitiv!");
 	setCode(tokens[0].c_str());
 	setDeparture(tokens[1].c_str());
 	setArrival(tokens[2].c_str());
@@ -51,7 +51,7 @@ int Bus::getTime() { return time; }
 void Bus::setTime(const int newT)
 {
 	if (newT <= 0)
-		throw runtime_error("Durata trebuie sa fie un numar pozitiv!");
+		throw TransportCreateException("Durata trebuie sa fie un numar pozitiv!");
 	time = newT;
 }
 

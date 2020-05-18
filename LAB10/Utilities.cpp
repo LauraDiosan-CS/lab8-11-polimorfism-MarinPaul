@@ -25,6 +25,34 @@ Date date_str(string line)
 	string item;
 	vector<int> elements;
 	while (getline(ss, item, '/'))
-		elements.push_back(stoi(item));
+	{
+		try
+		{
+			elements.push_back(stoi(item));
+		}
+		catch (exception& exc)
+		{
+			throw runtime_error("Ati introdus data gresit!");
+		}
+	}
+	if (elements.size() != 3)
+		throw runtime_error("Ati introdus data gresit!");
 	return Date(elements[0], elements[1], elements[2]);
+}
+
+void SetColor(int ForgC)
+{
+	WORD wColor;
+
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	//We use csbi for the wAttributes word.
+	if (GetConsoleScreenBufferInfo(hStdOut, &csbi))
+	{
+		//Mask out all but the background attribute, and add in the forgournd     color
+		wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+		SetConsoleTextAttribute(hStdOut, wColor);
+	}
+	return;
 }

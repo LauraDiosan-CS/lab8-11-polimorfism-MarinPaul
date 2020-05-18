@@ -1,4 +1,5 @@
 #pragma once
+#include "Validator.h"
 #include "Plane.h"
 #include "Bus.h"
 #include "User.h"
@@ -7,11 +8,16 @@ template<class T> class IRepo
 {
 protected:
 	vector<T*> elem;
+	Validator validator;
 public:
 	IRepo() {}
 	virtual ~IRepo() {}
 	void add(T* ent)
 	{
+		for (auto it = elem.begin(); it != elem.end(); ++it)
+			if (*ent == **it)
+				throw ExistingException("Elementul exista deja!");
+		validator.validate<T>(ent);
 		elem.push_back(ent->clone());
 	}
 	void del(T* ent)
@@ -23,17 +29,18 @@ public:
 				elem.erase(it);
 				return;
 			}
-		throw runtime_error("Elementul nu exista!");
+		throw ExistingException("Elementul nu exista!");
 	}
 	void mod(T* oldE, T* newE)
 	{
+		validator.validate<T>(newE);
 		for (auto it = elem.begin(); it != elem.end(); ++it)
 			if (*oldE == **it)
 			{
 				*it = newE->clone();
 				return;
 			}
-		throw runtime_error("Elementul nu exista!");
+		throw ExistingException("Elementul nu exista!");
 	}
 	int size() { return elem.size(); }
 	vector<T*>& all() { return elem; }

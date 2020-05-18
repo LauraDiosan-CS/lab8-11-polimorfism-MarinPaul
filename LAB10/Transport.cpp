@@ -13,11 +13,11 @@ Transport::Transport(const char* newC, const char* newDep,
 	const char* newArr, const Date newD, const int newT, const int newB)
 {
 	if (newT <= 0)
-		throw runtime_error("Numarul total de locuri trebuie sa fie pozitiv!");
+		throw TransportCreateException("Numarul total de locuri trebuie sa fie pozitiv!");
 	if (newB <= 0)
-		throw runtime_error("Numarul de locuri rezervate trebuie sa fie pozitiv!");
+		throw TransportCreateException("Numarul de locuri rezervate trebuie sa fie pozitiv!");
 	if (newT < newB)
-		throw runtime_error("Numarul total de locuri trebuie sa fie mai mare decat numarul de locuri rezervate!");
+		throw TransportCreateException("Numarul total de locuri trebuie sa fie mai mare decat numarul de locuri rezervate!");
 	setCode(newC);
 	setDeparture(newDep);
 	setArrival(newArr);
@@ -30,11 +30,11 @@ Transport::Transport(const char* newC, const char* newDep,
 	const char* newArr, const char* newD, const int newT, const int newB)
 {
 	if (newT <= 0)
-		throw runtime_error("Numarul total de locuri trebuie sa fie pozitiv!");
+		throw TransportCreateException("Numarul total de locuri trebuie sa fie pozitiv!");
 	if (newB <= 0)
-		throw runtime_error("Numarul de locuri rezervate trebuie sa fie pozitiv!");
+		throw TransportCreateException("Numarul de locuri rezervate trebuie sa fie pozitiv!");
 	if (newT < newB)
-		throw runtime_error("Numarul total de locuri trebuie sa fie mai mare decat numarul de locuri rezervate!");
+		throw TransportCreateException("Numarul total de locuri trebuie sa fie mai mare decat numarul de locuri rezervate!");
 	setCode(newC);
 	setDeparture(newDep);
 	setArrival(newArr);
@@ -108,18 +108,18 @@ void Transport::setDate(const Date newD)
 void Transport::setTotal_seat(const int newT)
 {
 	if (newT <= 0)
-		throw runtime_error("Numarul total de locuri trebuie sa fie pozitiv!");
+		throw TransportCreateException("Numarul total de locuri trebuie sa fie pozitiv!");
 	if(newT < this->booked_seat)
-		throw runtime_error("Numarul total de locuri trebuie sa fie mai mare decat numarul de locuri rezervate!");
+		throw TransportCreateException("Numarul total de locuri trebuie sa fie mai mare decat numarul de locuri rezervate!");
 	total_seat = newT;
 }
 
 void Transport::setBooked_seat(const int newB)
 {
 	if (newB <= 0)
-		throw runtime_error("Numarul de locuri rezervate trebuie sa fie pozitiv!");
+		throw TransportCreateException("Numarul de locuri rezervate trebuie sa fie pozitiv!");
 	if (newB > this->total_seat)
-		throw runtime_error("Numarul total de locuri trebuie sa fie mai mare decat numarul de locuri rezervate!");
+		throw TransportCreateException("Numarul total de locuri trebuie sa fie mai mare decat numarul de locuri rezervate!");
 	booked_seat = newB;
 }
 

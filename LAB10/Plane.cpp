@@ -11,7 +11,7 @@ Plane::Plane(const char* newC, const char* newDep,
 	:Transport(newC, newDep, newArr, newD, newT, newB)
 {
 	if (strcmp("da", newTr) != 0 && strcmp("nu", newTr) != 0)
-		throw runtime_error("Ati introdus gresit campul escala!");
+		throw TransportCreateException("Ati introdus gresit campul escala!");
 	setTransit(newTr);
 }
 
@@ -21,7 +21,7 @@ Plane::Plane(const char* newC, const char* newDep,
 	: Transport(newC, newDep, newArr, newD, newT, newB)
 {
 	if (strcmp("da", newTr) != 0 && strcmp("nu", newTr) != 0)
-		throw runtime_error("Ati introdus gresit campul escala!");
+		throw TransportCreateException("Ati introdus gresit campul escala!");
 	setTransit(newTr);
 }
 
@@ -34,7 +34,7 @@ Plane::Plane(string line, const char del)
 {
 	vector<string> tokens = readLine(line, del);
 	if (tokens[4] != "da" && tokens[4] != "nu")
-		throw runtime_error("Ati introdus gresit campul escala!");
+		throw TransportCreateException("Ati introdus gresit campul escala!");
 	setCode(tokens[0].c_str());
 	setDeparture(tokens[1].c_str());
 	setArrival(tokens[2].c_str());
@@ -55,7 +55,7 @@ char* Plane::getTransit() { return transit; }
 void Plane::setTransit(const char* newTr)
 {
 	if (strcmp("da", newTr) != 0 && strcmp("nu", newTr) != 0)
-		throw runtime_error("Ati introdus gresit campul escala!");
+		throw TransportCreateException("Ati introdus gresit campul escala!");
 	transit = new char[strlen(newTr) + 1];
 	strcpy_s(transit, strlen(newTr) + 1, newTr);
 }

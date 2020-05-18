@@ -1,17 +1,17 @@
 #pragma once
 #include "Service.h"
+#include "Customer.h"
 
 class UI
 {
 private:
 	Service service;
-	void add_ui();
-	void del_ui();
-	void mod_ui();
-	void all_ui();
+	void user();
+	void transport();
 	void client();
 	void boss();
 	void login(int);
+	template <class T> void all();
 public:
 	UI();
 	~UI();

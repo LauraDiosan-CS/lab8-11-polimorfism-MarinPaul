@@ -22,7 +22,7 @@ Service::Service(const char* type)
 		user->loadFromFile();
 		return;
 	}
-	throw runtime_error("Tip de fisier indisponibil!");
+	throw CodeNameException("Tip de fisier indisponibil!");
 }
 
 Service::Service(const char* type, const char* name1, const char* name2)
@@ -43,7 +43,7 @@ Service::Service(const char* type, const char* name1, const char* name2)
 		user->loadFromFile();
 		return;
 	}
-	throw runtime_error("Tip de fisier indisponibil!");
+	throw CodeNameException("Tip de fisier indisponibil!");
 }
 
 template <class T> void Service::add(T* ent) {}
@@ -148,7 +148,7 @@ void Service::csv_or_txt(const char* type)
 		user->loadFromFile();
 		return;
 	}
-	throw runtime_error("Tip de fisier indisponibil!");
+	throw CodeNameException("Tip de fisier indisponibil!");
 }
 
 User* Service::find_by_name(const char* name)
@@ -167,14 +167,41 @@ Transport* Service::find_by_code(const char* code)
 	return NULL;
 }
 
-Transport* Service::find_by_code_and_arrival(const char* code, const char* arrival)
+void Service::delete_t(Transport* t)
+{
+	del<Transport>(t);
+	int i = 0;
+	while (transport->at(i) != NULL)
+	{
+		Transport* crt = transport->at(i);
+		if (t->getDate() == crt->getDate())
+		{
+			if (strcmp(t->getDeparture(), crt->getArrival()) == 0 || strcmp(crt->getDeparture(), t->getArrival()) == 0)
+			{
+				del<Transport>(crt);
+				i--;
+			}
+		}
+		i++;
+	}
+}
+
+void Service::empty()
 {
 	for (auto it = transport->all().begin(); it != transport->all().end(); ++it)
-	{
-		if (strcmp((*it)->getCode(), code) == 0 && strcmp((*it)->getArrival(), arrival) == 0)
-			return *it;
-		if (strcmp((*it)->getCode(), code) == 0)
-			throw DeleteException1();
-	}
-	throw DeleteException2();
+		delete (*it);
+	transport->all().clear();
+	transport->saveToFile();
 }
+
+			//Transport* Service::find_by_code_and_arrival(const char* code, const char* arrival)
+			//{
+			//	for (auto it = transport->all().begin(); it != transport->all().end(); ++it)
+			//	{
+			//		if (strcmp((*it)->getCode(), code) == 0 && strcmp((*it)->getArrival(), arrival) == 0)
+			//			return *it;
+			//		if (strcmp((*it)->getCode(), code) == 0)
+			//			throw DeleteException1();
+			//	}
+			//	throw DeleteException2();
+			//}

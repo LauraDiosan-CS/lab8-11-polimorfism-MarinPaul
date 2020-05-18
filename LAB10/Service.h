@@ -4,6 +4,7 @@
 
 class Service
 {
+	friend class Customer;
 private:
 	IRepo<Transport>* transport;
 	IRepo<User>* user;
@@ -22,5 +23,7 @@ public:
 	void csv_or_txt(const char*);
 	User* find_by_name(const char*);
 	Transport* find_by_code(const char*);
-	Transport* find_by_code_and_arrival(const char*, const char*);
+	void delete_t(Transport*);
+	void empty();
+			//Transport* find_by_code_and_arrival(const char*, const char*);
 };

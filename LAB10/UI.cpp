@@ -4,296 +4,452 @@ UI::UI() {}
 
 UI::~UI() {}
 
-void UI::add_ui()
+template <class T> void UI::all() {}
+template <> void UI::all<User>()
 {
-	string opt;
-	cout << "Doriti <utilizator> sau <calatorie>?" << endl << "Introduceti: ";
-	cin >> opt;
-	if (opt == "utilizator")
+	if (service.all<User>().size() == 0)
+		cout << "Niciun utilizator momentan!";
+	else
 	{
-		char* name = new char[30];
-		char* password = new char[30];
-		cout << "Introduceti numele: ";
-		cin >> name;
-		cout << "Introduceti parola: ";
-		cin >> password;
-		if (service.find_by_name(name) != NULL)
+		cout << "Utilizatori:";
+		for (auto it = service.all<User>().begin(); it != service.all<User>().end(); ++it)
+			cout << endl << (*it)->toString();
+	}
+}
+template <> void UI::all<Transport>()
+{
+	if (service.all<Transport>().size() == 0)
+		cout << "Nicio calatorie momentan";
+	else
+	{
+		cout << "Calatorii:";
+		for (auto it = service.all<Transport>().begin(); it != service.all<Transport>().end(); ++it)
 		{
+			if ((*it)->getTotal_seat() == (*it)->getBooked_seat())
+				SetColor(3);
+			cout << endl << (*it)->toString();
+			SetColor(0);
+		}
+	}
+}
+
+void UI::user()
+{
+	try
+	{
+		string opt;
+		cout << "Introduceti: <add> pentru adaugare; <del> pentru stergere; <mod> pentru modificare; <all> pentru afisare totala; <x> pentru intoarcere" << endl;
+		cout << "Introduceti: ";
+		cin >> opt;
+		if (opt == "add")
+		{
+			char* name = new char[30];
+			char* password = new char[30];
+			cout << "Introduceti numele: ";
+			cin >> name;
+			if (service.find_by_name(name) != NULL)
+			{
+				delete[] name;
+				delete[] password;
+				throw CodeNameException("Nume utilizat deja!");
+			}
+			cout << "Introduceti parola: ";
+			cin >> password;
+			service.add<User>(new User(name, password));
+			cout << "Adaugat!";
 			delete[] name;
 			delete[] password;
-			throw runtime_error("Nume utilizat deja!");
 		}
-		service.add<User>(new User(name, password));
-		cout << "Adaugat!";
-		delete[] name;
-		delete[] password;
-		return;
-	}
-	else if (opt == "calatorie")
-	{
-		string opt_2;
-		cout << "Doriti <autobuz> sau <avion>?" << endl << "Introduceti: ";
-		cin >> opt_2;
-		if (opt_2 == "autobuz")
+		else if (opt == "del")
 		{
-			char* code = new char[30];
-			char* departure = new char[30];
-			char* arrival = new char[30];
-			Date date;
-			int time, total_seats, booked_seats;
-			cout << "Introduceti codul: ";
-			cin >> code;
-			cout << "Introduceti locatia plecarii: ";
-			cin >> departure;
-			cout << "Introduceti locatia destiantiei: ";
-			cin >> arrival;
-			cout << "Introduceti data plecarii sub forma <dd/mm/yyyy>: ";
-			cin >> date;
-			cout << "Introduceti durata calatoriei: ";
-			cin >> time;
-			cout << "Introduceti numarul de locuri totale: ";
-			cin >> total_seats;
-			cout << "Introduceti numarul de locuri rezervate: ";
-			cin >> booked_seats;
-			if (service.find_by_code(code) != NULL)
+			char* name = new char[30];
+			cout << "Introduceti numele: ";
+			cin >> name;
+			if (service.find_by_name(name) == NULL)
 			{
-				delete[] code;
-				delete[] departure;
-				delete[] arrival;
-				throw runtime_error("Cod utilizat deja!");
+				delete[] name;
+				throw CodeNameException("Nume inexistent!");
 			}
-			service.add<Transport>(new Bus(code, departure, arrival, date, time, total_seats, booked_seats));
-			cout << "Adaugat!";
-			delete[] code;
-			delete[] departure;
-			delete[] arrival;
-			return;
-		}
-		else if (opt_2 == "avion")
-		{
-			char* code = new char[30];
-			char* departure = new char[30];
-			char* arrival = new char[30];
-			Date date;
-			char* transit = new char[30];
-			int total_seats, booked_seats;
-			cout << "Introduceti codul: ";
-			cin >> code;
-			cout << "Introduceti locatia plecarii: ";
-			cin >> departure;
-			cout << "Introduceti locatia destiantiei: ";
-			cin >> arrival;
-			cout << "Introduceti data plecarii sub forma <dd/mm/yyyy>: ";
-			cin >> date;
-			cout << "Este cu escala calatoria? Introduceti <da> sau <nu>: ";
-			cin >> transit;
-			cout << "Introduceti numarul de locuri totale: ";
-			cin >> total_seats;
-			cout << "Introduceti numarul de locuri rezervate: ";
-			cin >> booked_seats;
-			if (service.find_by_code(code) != NULL)
-			{
-				delete[] code;
-				delete[] departure;
-				delete[] arrival;
-				delete[] transit;
-				throw runtime_error("Cod utilizat deja!");
-			}
-			service.add<Transport>(new Plane(code, departure, arrival, date, transit, total_seats, booked_seats));
-			cout << "Adaugat!";
-			delete[] code;
-			delete[] departure;
-			delete[] arrival;
-			delete[] transit;
-			return;
-		}
-		throw runtime_error("Comanda invalida!");
-	}
-	throw runtime_error("Comanda invalida!");
-}
-
-void UI::del_ui()
-{
-	string opt;
-	cout << "Doriti <utilizator> sau <calatorie>?" << endl << "Introduceti: ";
-	cin >> opt;
-	if (opt == "utilizator")
-	{
-		char* name = new char[30];
-		cout << "Introduceti numele: ";
-		cin >> name;
-		if (service.find_by_name(name) == NULL)
-		{
+			service.del<User>(service.find_by_name(name));
+			cout << "Sters!";
 			delete[] name;
-			throw runtime_error("Nume inexistent!");
 		}
-		service.del<User>(service.find_by_name(name));
-		cout << "Sters!";
-		delete[] name;
-		return;
-	}
-	else if (opt == "calatorie")
-	{
-		char* code = new char[30];
-		cout << "Introduceti codul: ";
-		cin >> code;
-		if (service.find_by_code(code) == NULL)
+		else if (opt == "mod")
 		{
-			delete[] code;
-			throw runtime_error("Cod inexistent!");
-		}
-		service.del<Transport>(service.find_by_code(code));
-		cout << "Sters!";
-		delete[] code;
-		return;
-	}
-	throw runtime_error("Comanda invalida!");
-}
-
-void UI::mod_ui()
-{
-	string opt;
-	cout << "Doriti <utilizator> sau <calatorie>?" << endl << "Introduceti: ";
-	cin >> opt;
-	if (opt == "utilizator")
-	{
-		char* oldName = new char[30];
-		cout << "Introduceti numele: ";
-		cin >> oldName;
-		if (service.find_by_name(oldName) == NULL)
-		{
-			delete[] oldName;
-			throw runtime_error("Nume inexistent!");
-		}
-		char* name = new char[30];
-		char* password = new char[30];
-		cout << "Introduceti numele: ";
-		cin >> name;
-		cout << "Introduceti parola: ";
-		cin >> password;
-		if (service.find_by_name(name) != NULL && strcmp(oldName, name) != 0)
-		{
+			char* oldName = new char[30];
+			cout << "Introduceti vechiul nume: ";
+			cin >> oldName;
+			if (service.find_by_name(oldName) == NULL)
+			{
+				delete[] oldName;
+				throw CodeNameException("Nume inexistent!");
+			}
+			char* name = new char[30];
+			char* password = new char[30];
+			cout << "Introduceti numele: ";
+			cin >> name;
+			if (service.find_by_name(name) != NULL && strcmp(oldName, name) != 0)
+			{
+				delete[] oldName;
+				delete[] name;
+				delete[] password;
+				throw CodeNameException("Nume utilizat deja!");
+			}
+			cout << "Introduceti parola: ";
+			cin >> password;
+			service.mod<User>(service.find_by_name(oldName), new User(name, password));
+			cout << "Modificat!";
 			delete[] oldName;
 			delete[] name;
 			delete[] password;
-			throw runtime_error("Nume utilizat deja!");
 		}
-		service.mod<User>(service.find_by_name(oldName), new User(name, password));
-		cout << "Modificat!";
-		delete[] oldName;
-		delete[] name;
-		delete[] password;
-		return;
+		else if (opt == "all")
+		{
+			all<User>();
+		}
+		else if (opt == "x")
+			return;
+		else throw InputException("Comanda invalida!");
 	}
-	else if (opt == "calatorie")
+	catch (exception& exc)
 	{
-		char* oldCode = new char[30];
-		cout << "Introduceti codul: ";
-		cin >> oldCode;
-		if (service.find_by_code(oldCode) == NULL)
-		{
-			delete[] oldCode;
-			throw runtime_error("Cod inexistent!");
-		}
-		string opt_2;
-		cout << "Doriti <autobuz> sau <avion>?" << endl << "Introduceti: ";
-		cin >> opt_2;
-		if (opt_2 == "autobuz")
-		{
-			char* code = new char[30];
-			char* departure = new char[30];
-			char* arrival = new char[30];
-			Date date;
-			int time, total_seats, booked_seats;
-			cout << "Introduceti codul: ";
-			cin >> code;
-			cout << "Introduceti locatia plecarii: ";
-			cin >> departure;
-			cout << "Introduceti locatia destiantiei: ";
-			cin >> arrival;
-			cout << "Introduceti data plecarii sub forma <dd/mm/yyyy>: ";
-			cin >> date;
-			cout << "Introduceti durata calatoriei: ";
-			cin >> time;
-			cout << "Introduceti numarul de locuri totale: ";
-			cin >> total_seats;
-			cout << "Introduceti numarul de locuri rezervate: ";
-			cin >> booked_seats;
-			if (service.find_by_code(code) != NULL && strcmp(oldCode, code) != 0)
-			{
-				delete[] oldCode;
-				delete[] code;
-				delete[] departure;
-				delete[] arrival;
-				throw runtime_error("Cod utilizat deja!");
-			}
-			service.mod<Transport>(service.find_by_code(oldCode), new Bus(code, departure, arrival, date, time, total_seats, booked_seats));
-			cout << "Modificat!";
-			delete[] oldCode;
-			delete[] code;
-			delete[] departure;
-			delete[] arrival;
-			return;
-		}
-		else if (opt_2 == "avion")
-		{
-			char* code = new char[30];
-			char* departure = new char[30];
-			char* arrival = new char[30];
-			Date date;
-			char* transit = new char[30];
-			int total_seats, booked_seats;
-			cout << "Introduceti codul: ";
-			cin >> code;
-			cout << "Introduceti locatia plecarii: ";
-			cin >> departure;
-			cout << "Introduceti locatia destiantiei: ";
-			cin >> arrival;
-			cout << "Introduceti data plecarii sub forma <dd/mm/yyyy>: ";
-			cin >> date;
-			cout << "Este cu escala calatoria? Introduceti <da> sau <nu>: ";
-			cin >> transit;
-			cout << "Introduceti numarul de locuri totale: ";
-			cin >> total_seats;
-			cout << "Introduceti numarul de locuri rezervate: ";
-			cin >> booked_seats;
-			if (service.find_by_code(code) != NULL && strcmp(oldCode, code) != 0)
-			{
-				delete[] oldCode;
-				delete[] code;
-				delete[] departure;
-				delete[] arrival;
-				delete[] transit;
-				throw runtime_error("Cod utilizat deja!");
-			}
-			service.mod<Transport>(service.find_by_code(oldCode), new Plane(code, departure, arrival, date, transit, total_seats, booked_seats));
-			cout << "Modificat!";
-			delete[] oldCode;
-			delete[] code;
-			delete[] departure;
-			delete[] arrival;
-			delete[] transit;
-			return;
-		}
-		throw runtime_error("Comanda invalida!");
+		cout << exc.what();
 	}
-	throw runtime_error("Comanda invalida!");
-}
-
-void UI::all_ui()
-{
-	cout << "Calatorii:";
-	for (auto it = service.all<Transport>().begin(); it != service.all<Transport>().end(); ++it)
-		cout << endl << (*it)->toString();
 	cout << endl;
-	cout << "Utilizatori:";
-	for (auto it = service.all<User>().begin(); it != service.all<User>().end(); ++it)
-		cout << endl << (*it)->toString();
+	user();
 }
 
-void UI::client()
+void UI::transport()
 {
-	cout << "Sorry... nimic momentan!" << endl;
+	try
+	{
+		string opt;
+		cout << "Introduceti: <add> pentru adaugare; <del> pentru stergere; <mod> pentru modificare; <all> pentru afisare totala; <x> pentru intoarcere" << endl;
+		cout << "Introduceti: ";
+		cin >> opt;
+		if (opt == "add")
+		{
+			string opt_2;
+			cout << "Doriti <autobuz> sau <avion>?" << endl << "Introduceti: ";
+			cin >> opt_2;
+			if (opt_2 == "autobuz")
+			{
+				char* code = new char[30];
+				char* departure = new char[30];
+				char* arrival = new char[30];
+				Date date;
+				string time, total_seats, booked_seats;
+				cout << "Introduceti codul: ";
+				cin >> code;
+				if (service.find_by_code(code) != NULL)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					throw CodeNameException("Cod utilizat deja!");
+				}
+				cout << "Introduceti locatia plecarii: ";
+				cin >> departure;
+				cout << "Introduceti locatia destiantiei: ";
+				cin >> arrival;
+				cout << "Introduceti data plecarii sub forma <dd/mm/yyyy>: ";
+				cin >> date;
+				cout << "Introduceti durata calatoriei: ";
+				try
+				{
+					cin >> time;
+					if (stoi(time) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					throw InputException("Durata calatoriei trebuie sa fie un numar natural strict pozitiv!");
+				}
+				cout << "Introduceti numarul de locuri totale: ";
+				try
+				{
+					cin >> total_seats;
+					if (stoi(total_seats) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+				}
+				cout << "Introduceti numarul de locuri rezervate: ";
+				try
+				{
+					cin >> booked_seats;
+					if (stoi(booked_seats) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+				}				
+				service.add<Transport>(new Bus(code, departure, arrival, date, stoi(time), stoi(total_seats), stoi(booked_seats)));
+				cout << "Adaugat!";
+				delete[] code;
+				delete[] departure;
+				delete[] arrival;
+			}
+			else if (opt_2 == "avion")
+			{
+				char* code = new char[30];
+				char* departure = new char[30];
+				char* arrival = new char[30];
+				Date date;
+				char* transit = new char[30];
+				string total_seats, booked_seats;
+				cout << "Introduceti codul: ";
+				cin >> code;
+				if (service.find_by_code(code) != NULL)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					delete[] transit;
+					throw CodeNameException("Cod utilizat deja!");
+				}
+				cout << "Introduceti locatia plecarii: ";
+				cin >> departure;
+				cout << "Introduceti locatia destiantiei: ";
+				cin >> arrival;
+				cout << "Introduceti data plecarii sub forma <dd/mm/yyyy>: ";
+				cin >> date;
+				cout << "Este cu escala calatoria? Introduceti <da> sau <nu>: ";
+				cin >> transit;
+				cout << "Introduceti numarul de locuri totale: ";
+				try
+				{
+					cin >> total_seats;
+					if (stoi(total_seats) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					delete[] transit;
+					throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+				}
+				cout << "Introduceti numarul de locuri rezervate: ";
+				try
+				{
+					cin >> booked_seats;
+					if (stoi(booked_seats) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					delete[] transit;
+					throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+				}
+				service.add<Transport>(new Plane(code, departure, arrival, date, transit, stoi(total_seats), stoi(booked_seats)));
+				cout << "Adaugat!";
+				delete[] code;
+				delete[] departure;
+				delete[] arrival;
+				delete[] transit;
+			}
+			else throw InputException("Comanda invalida!");
+		}
+		else if (opt == "del")
+		{
+			char* code = new char[30];
+			cout << "Introduceti codul: ";
+			cin >> code;
+			if (service.find_by_code(code) == NULL)
+			{
+				delete[] code;
+				throw CodeNameException("Cod inexistent!");
+			}
+			service.del<Transport>(service.find_by_code(code));
+			cout << "Sters!";
+			delete[] code;
+		}
+		else if (opt == "mod")
+		{
+			char* oldCode = new char[30];
+			cout << "Introduceti codul: ";
+			cin >> oldCode;
+			if (service.find_by_code(oldCode) == NULL)
+			{
+				delete[] oldCode;
+				throw CodeNameException("Cod inexistent!");
+			}
+			string opt_2;
+			cout << "Doriti <autobuz> sau <avion>?" << endl << "Introduceti: ";
+			cin >> opt_2;
+			if (opt_2 == "autobuz")
+			{
+				char* code = new char[30];
+				char* departure = new char[30];
+				char* arrival = new char[30];
+				Date date;
+				string time, total_seats, booked_seats;
+				cout << "Introduceti codul: ";
+				cin >> code;
+				if (service.find_by_code(code) != NULL && strcmp(oldCode, code) != 0)
+				{
+					delete[] oldCode;
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					throw CodeNameException("Cod utilizat deja!");
+				}
+				cout << "Introduceti locatia plecarii: ";
+				cin >> departure;
+				cout << "Introduceti locatia destinatiei: ";
+				cin >> arrival;
+				cout << "Introduceti data plecarii sub forma <dd/mm/yyyy>: ";
+				cin >> date;
+				cout << "Introduceti durata calatoriei: ";
+				try
+				{
+					cin >> time;
+					if (stoi(time) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] oldCode;
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					throw InputException("Durata calatoriei trebuie sa fie un numar natural strict pozitiv!");
+				}
+				cout << "Introduceti numarul de locuri totale: ";
+				try
+				{
+					cin >> total_seats;
+					if (stoi(total_seats) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] oldCode;
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+				}
+				cout << "Introduceti numarul de locuri rezervate: ";
+				try
+				{
+					cin >> booked_seats;
+					if (stoi(booked_seats) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] oldCode;
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+				}
+				service.mod<Transport>(service.find_by_code(oldCode), new Bus(code, departure, arrival, date, stoi(time), stoi(total_seats), stoi(booked_seats)));
+				cout << "Modificat!";
+				delete[] oldCode;
+				delete[] code;
+				delete[] departure;
+				delete[] arrival;
+			}
+			else if (opt_2 == "avion")
+			{
+				char* code = new char[30];
+				char* departure = new char[30];
+				char* arrival = new char[30];
+				Date date;
+				char* transit = new char[30];
+				string total_seats, booked_seats;
+				cout << "Introduceti codul: ";
+				cin >> code;
+				if (service.find_by_code(code) != NULL && strcmp(oldCode, code) != 0)
+				{
+					delete[] oldCode;
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					delete[] transit;
+					throw CodeNameException("Cod utilizat deja!");
+				}
+				cout << "Introduceti locatia plecarii: ";
+				cin >> departure;
+				cout << "Introduceti locatia destinatiei: ";
+				cin >> arrival;
+				cout << "Introduceti data plecarii sub forma <dd/mm/yyyy>: ";
+				cin >> date;
+				cout << "Este cu escala calatoria? Introduceti <da> sau <nu>: ";
+				cin >> transit;
+				cout << "Introduceti numarul de locuri totale: ";
+				try
+				{
+					cin >> total_seats;
+					if (stoi(total_seats) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					delete[] transit;
+					throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+				}
+				cout << "Introduceti numarul de locuri rezervate: ";
+				try
+				{
+					cin >> booked_seats;
+					if (stoi(booked_seats) <= 0)
+						throw runtime_error(NULL);
+				}
+				catch (exception& exc)
+				{
+					delete[] code;
+					delete[] departure;
+					delete[] arrival;
+					delete[] transit;
+					throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+				}
+				service.mod<Transport>(service.find_by_code(oldCode), new Plane(code, departure, arrival, date, transit, stoi(total_seats), stoi(booked_seats)));
+				cout << "Modificat!";
+				delete[] oldCode;
+				delete[] code;
+				delete[] departure;
+				delete[] arrival;
+				delete[] transit;
+			}
+			else throw InputException("Comanda invalida!");
+		}
+		else if (opt == "all")
+		{
+		all<Transport>();
+		}
+		else if (opt == "x")
+			return;
+		else throw InputException("Comanda invalida!");
+	}
+	catch (exception& exc)
+	{
+		cout << exc.what();
+	}
+	cout << endl;
+	transport();
 }
 
 void UI::boss()
@@ -301,20 +457,16 @@ void UI::boss()
 	try
 	{
 		string opt;
-		cout << "Introduceti: <add> pentru adaugare; <del> pentru stergere; <mod> pentru modificare; <all> pentru afisare totala; <x> pentru inchidere" << endl;
+		cout << "Introduceti: <utilizator> pentru modificare utilizatori, <calatorie> pentru modificare calatorie, <x> pentru iesire" << endl;
 		cout << "Introduceti: ";
 		cin >> opt;
-		if (opt == "add")
-			add_ui();
-		else if (opt == "del")
-			del_ui();
-		else if (opt == "mod")
-			mod_ui();
-		else if (opt == "all")
-			all_ui();
+		if (opt == "utilizator")
+			user();
+		else if (opt == "calatorie")
+			transport();
 		else if (opt == "x")
 			return;
-		else throw runtime_error("Comanda invalida!");
+		else throw InputException("Comanda invalida!");
 	}
 	catch (exception& exc)
 	{
@@ -325,16 +477,81 @@ void UI::boss()
 
 }
 
+void UI::client()
+{
+	Customer c;
+	try
+	{
+		string opt;
+		cout << "Introduceti: <cautare> pentru cautare, <rezervare> pentru rezervare, <logout> pentru logout" << endl << "Introduceti: ";
+		cin >> opt;
+		if (opt == "cautare")
+		{
+			Date d;
+			cout << "Introduceti data pentru cautare: ";
+			cin >> d;
+			vector<Transport*> result = c.search(service, d);
+			if (result.size() == 0)
+				cout << "Nu a fost gasita nicio calatorie cu aceasta data!";
+			else
+			{
+				cout << "Rezultatele cautarii:";
+				for (auto it = result.begin(); it != result.end(); ++it)
+					cout << endl << (*it)->toString();
+			}
+		}
+		else if (opt == "rezervare")
+		{
+			char* code = new char[30];
+			string seats;
+			cout << "Introduceti codul: ";
+			cin >> code;
+			if (service.find_by_code(code) == NULL)
+			{
+				delete[] code;
+				throw CodeNameException("Cod inexistent!");
+			}
+			cout << "Introduceti numarul de locuri: ";
+			try
+			{
+				cin >> seats;
+				if (stoi(seats) <= 0)
+					throw runtime_error(NULL);
+			}
+			catch (exception& exc)
+			{
+				delete[] code;
+				throw InputException("Numarul de locuri trebuie sa fie un numar natural strict pozitiv!");
+			}
+			c.book(service, code, stoi(seats));
+			cout << "Rezervare realizata!" << endl;
+			all<Transport>();
+		}
+		else if (opt == "logout")
+			return;
+		else throw InputException("Comanda invalida!");
+	}
+	catch (exception& exc)
+	{
+		cout << exc.what();
+	}
+	cout << endl;
+	client();
+}
+
 void UI::login(int tries)
 {
 	try
 	{
 		if (tries == 0)
 		{
-			cout << "Ati epuizat numarul de incercari!";
+			cout << "Ati epuizat numarul de incercari!" << endl;
 			return;
 		}
-		cout << "Aveti " << tries << " incercari." << endl;
+		if (tries == 1)
+			cout << "Mai aveti o singura incercare!" << endl;
+		else
+			cout << "Aveti " << tries << " incercari." << endl;
 		char* name = new char[30];
 		char* password = new char[30];
 		cout << "Introduceti numele: ";
@@ -343,13 +560,24 @@ void UI::login(int tries)
 		cin >> password;
 		if (service.login(name, password))
 		{
-			cout << "Buna ziua, " << name << "!" << endl;
-			boss();
+			char* name_2 = new char[strlen(name) + 1];
+			strcpy_s(name_2, strlen(name) + 1, name);
+			name_2[0] = toupper(name_2[0]);
+			cout << "Buna ziua, " << name_2 << "!" << endl;
+			delete[] name_2;
+			all<Transport>();
+			cout << endl;
+			client();
 			delete[] name;
 			delete[] password;
-			return;
+			login(3);
 		}
-		else cout << "Nume sau parola incorecte!";
+		else
+		{
+			cout << "Nume sau parola incorecta!";
+			delete[] name;
+			delete[] password;
+		}
 		cout << endl;
 	}
 	catch (exception& exc)
@@ -372,17 +600,18 @@ void UI::show()
 		cin >> opt;
 		if (opt == "patron")
 		{
-			login(3);
+			boss();
 			cout << "La revedere!";
 			return;
 		}
 		if (opt == "client")
 		{
+			cout << "Log-in:" << endl;
 			login(3);
 			cout << "La revedere!";
 			return;
 		}
-		throw runtime_error("Comanda invalida!");
+		throw InputException("Comanda invalida!");
 	}
 	catch (exception& exc)
 	{

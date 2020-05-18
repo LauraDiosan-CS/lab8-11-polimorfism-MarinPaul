@@ -39,13 +39,25 @@ public:
 			if (name == "Plane")
 			{
 				ent = new Plane(line, delimit);
-				IRepo<Transport>::elem.push_back(ent->clone());
+				for (Transport* crt : IRepo<Transport>::elem)
+					if (strcmp(crt->getCode(), ent->getCode()) == 0)
+					{
+						delete ent;
+						throw CodeNameException("Cod utilizat deja!");
+					}
+				IRepo<Transport>::add(ent);
 				delete[] ent;
 			}
 			if (name == "Bus")
 			{
 				ent = new Bus(line, delimit);
-				IRepo<Transport>::elem.push_back(ent->clone());
+				for (Transport* crt : IRepo<Transport>::elem)
+					if (strcmp(crt->getCode(), ent->getCode()) == 0)
+					{
+						delete ent;
+						throw CodeNameException("Cod utilizat deja!");
+					}
+				IRepo<Transport>::add(ent);
 				delete ent;
 			}
 		}
@@ -86,7 +98,13 @@ public:
 			if (line == "")
 				return;
 			ent = new User(line, delimit);
-			IRepo<User>::elem.push_back(ent->clone());
+			for (User* crt : IRepo<User>::elem)
+				if (strcmp(crt->getName(), ent->getName()) == 0)
+				{
+					delete ent;
+					throw CodeNameException("Nume utilizat deja!");
+				}
+			IRepo<User>::add(ent);
 			delete ent;
 		}
 		f.close();
